@@ -159,7 +159,7 @@ const OrderCard = ({ card, listName }) => {
   return (
     <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-gray-200/50 p-4 hover:shadow-lg transition-all duration-300 group hover:border-gray-300/50 hover:bg-white hover:shadow-xl">
       <div className="flex items-start flex-wrap gap-2 md:gap-4">
-        <h3 className="font-semibold flex-1 min-w-0 mr-2 text-gray-900" style={{color: '#25323A', minWidth: '200px'}}>
+        <h3 className="font-semibold flex-1 min-w-0 mr-2 text-gray-900" style={{color: '#25323A', minWidth: '180px', maxWidth: '250px'}}>
           <a
             href={card.url}
             target="_blank"
@@ -172,7 +172,7 @@ const OrderCard = ({ card, listName }) => {
           </a>
         </h3>
         
-        <div className="flex flex-wrap gap-1" style={{minWidth: '200px'}}>
+        <div className="flex flex-wrap gap-1" style={{minWidth: '120px', flex: '1'}}>
           {card.labels && card.labels.map((label) => (
             <span
               key={label.id}
@@ -206,8 +206,8 @@ const OrderCard = ({ card, listName }) => {
         </div>
         
         <div className="flex items-center px-3 py-1.5 rounded-full flex-shrink-0" style={{backgroundColor: 'rgba(37,50,58,0.1)', minWidth: '150px'}}>
-          <Calendar className="h-4 w-4 mr-2" style={{color: '#25323A'}} />
-          <span className="font-medium text-sm whitespace-nowrap" style={{color: '#25323A'}}>
+          <Calendar className="h-3 w-3 mr-2" style={{color: '#25323A'}} />
+          <span className="font-medium text-xs whitespace-nowrap" style={{color: '#25323A'}}>
             {getDateLabel(listName)} {formatDate(getDisplayDate(card))}
           </span>
         </div>
@@ -223,14 +223,14 @@ const OrderList = ({ list, cards, isLoading }) => {
   return (
     <div className="mb-8 bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:bg-white/95">
       <div className="px-6 py-5 border-b border-gray-100" style={{background: 'linear-gradient(135deg, rgba(37,50,58,0.05) 0%, rgba(242,65,98,0.05) 100%)'}}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center">
             <div className={`p-3 rounded-xl mr-4 shadow-lg ${status.color}`}>
               <StatusIcon className="h-6 w-6 text-white" />
             </div>
             <h2 className="font-bold text-xl" style={{color: '#25323A'}}>{list.name}</h2>
           </div>
-          <span className="text-sm font-bold px-4 py-2 rounded-full text-white shadow-md" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
+          <span className="text-sm font-bold px-4 py-2 rounded-full text-white shadow-md flex-shrink-0" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
             {cards.length} ordrar
           </span>
         </div>
