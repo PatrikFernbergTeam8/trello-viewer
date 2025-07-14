@@ -113,7 +113,7 @@ const Sidebar = ({ activeMenu, setActiveMenu, isCollapsed, setIsCollapsed }) => 
             className="p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
             title={isCollapsed ? 'Expandera meny' : 'Minimera meny'}
           >
-            {isCollapsed ? <Menu className="h-5 w-5" /> : <X className="h-5 w-5" />}
+            {isCollapsed ? <Menu className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
           </button>
         </div>
         
