@@ -86,7 +86,7 @@ const Sidebar = ({ activeMenu, setActiveMenu, isCollapsed, setIsCollapsed }) => 
     { id: 'telefoni', name: 'Telefonileveranser', icon: Phone },
     { id: 'av', name: 'AV-leveranser', icon: Monitor },
     { id: 'm365', name: 'M365-leveranser', icon: Cloud },
-    { id: 'lager', name: 'Lager', icon: Archive }
+    { id: 'lager', name: 'Lager', icon: Truck }
   ];
 
   return (
@@ -565,7 +565,7 @@ export default function TrelloOrderDashboard() {
             <div className="mb-6 lg:mb-8">
               <div className="flex items-center mb-4">
                 <div className="p-2 lg:p-3 rounded-2xl shadow-lg mr-3 lg:mr-4" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
-                  <Archive className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+                  <Truck className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
@@ -580,7 +580,7 @@ export default function TrelloOrderDashboard() {
             
             <div className="max-w-7xl mx-auto">
               <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 p-8 text-center">
-                <Archive className="h-16 w-16 mx-auto mb-4" style={{color: '#25323A', opacity: 0.3}} />
+                <Truck className="h-16 w-16 mx-auto mb-4" style={{color: '#25323A', opacity: 0.3}} />
                 <h2 className="text-2xl font-bold mb-2" style={{color: '#25323A'}}>Lager Dashboard</h2>
                 <p className="text-lg" style={{color: '#25323A', opacity: 0.6}}>Kommer snart</p>
               </div>
