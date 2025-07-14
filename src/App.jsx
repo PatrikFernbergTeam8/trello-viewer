@@ -3,9 +3,9 @@ import { Package, Clock, CheckCircle, AlertCircle, Truck, Calendar } from "lucid
 
 // Konfigurera dina API-uppgifter här
 const API_CONFIG = {
-  key: "6d0d94985c0d11197be0bfce09045290",
-  token: "ATTA35a0834a36b22dd1adfc446c46c6216b3cfed53a5822d823d0770f23bd5a450dE493E547",
-  boardId: "5vaVervN"
+  key: import.meta.env.VITE_API_KEY,
+  token: import.meta.env.VITE_API_TOKEN,
+  boardId: import.meta.env.VITE_BOARD_ID
 };
 
 // Statusikoner och färger för olika listor
