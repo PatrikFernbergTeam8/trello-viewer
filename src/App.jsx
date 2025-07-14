@@ -85,7 +85,8 @@ const Sidebar = ({ activeMenu, setActiveMenu, isCollapsed, setIsCollapsed }) => 
     { id: 'skrivare', name: 'Skrivarleveranser', icon: Printer },
     { id: 'telefoni', name: 'Telefonileveranser', icon: Phone },
     { id: 'av', name: 'AV-leveranser', icon: Monitor },
-    { id: 'm365', name: 'M365-leveranser', icon: Cloud }
+    { id: 'm365', name: 'M365-leveranser', icon: Cloud },
+    { id: 'lager', name: 'Lager', icon: Archive }
   ];
 
   return (
@@ -364,6 +365,7 @@ export default function TrelloOrderDashboard() {
       case 'telefoni': return 'Telefonileveranser Dashboard';
       case 'av': return 'AV-leveranser Dashboard';
       case 'm365': return 'M365-leveranser Dashboard';
+      case 'lager': return 'Lager Dashboard';
       default: return 'Orderstatus Dashboard';
     }
   };
@@ -405,8 +407,8 @@ export default function TrelloOrderDashboard() {
   }, [fetchWithErrorHandling]);
 
   const fetchData = useCallback(async () => {
-    if (activeMenu === 'oversikt') {
-      // För översikt, visa bara en enkel sida
+    if (activeMenu === 'oversikt' || activeMenu === 'lager') {
+      // För översikt och lager, visa bara en enkel sida
       setLoading(false);
       return;
     }
@@ -439,7 +441,7 @@ export default function TrelloOrderDashboard() {
 
   const totalOrders = Object.values(cardsByList).reduce((sum, cards) => sum + cards.length, 0);
 
-  if (loading && activeMenu !== 'oversikt') {
+  if (loading && activeMenu !== 'oversikt' && activeMenu !== 'lager') {
     return (
       <div className="min-h-screen flex" style={{background: 'linear-gradient(135deg, #25323A 0%, #1a252b 50%, #25323A 100%)'}}>
         <Sidebar 
@@ -549,6 +551,38 @@ export default function TrelloOrderDashboard() {
               {/* Plats för framtida innehåll */}
               <div className="space-y-6">
                 {/* Här kan ni lägga till fler sektioner senare */}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : activeMenu === 'lager' ? (
+        <div className="flex-1 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{background: 'linear-gradient(45deg, rgba(242,65,98,0.1) 0%, transparent 50%, rgba(242,65,98,0.1) 100%)'}}></div>
+          </div>
+          
+          <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+            <div className="mb-6 lg:mb-8">
+              <div className="flex items-center mb-4">
+                <div className="p-2 lg:p-3 rounded-2xl shadow-lg mr-3 lg:mr-4" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
+                  <Archive className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
+                    Lager Dashboard
+                  </h1>
+                  <p className="text-sm sm:text-base lg:text-lg text-gray-300 mt-1">
+                    Lagerhantering och inventering
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 p-8 text-center">
+                <Archive className="h-16 w-16 mx-auto mb-4" style={{color: '#25323A', opacity: 0.3}} />
+                <h2 className="text-2xl font-bold mb-2" style={{color: '#25323A'}}>Lager Dashboard</h2>
+                <p className="text-lg" style={{color: '#25323A', opacity: 0.6}}>Kommer snart</p>
               </div>
             </div>
           </div>
