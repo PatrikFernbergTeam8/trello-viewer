@@ -79,7 +79,7 @@ const getResponsibleSeller = (card) => {
   return '';
 };
 
-const Sidebar = ({ activeMenu, setActiveMenu }) => {
+const Sidebar = ({ activeMenu, setActiveMenu, isCollapsed, setIsCollapsed }) => {
   const menuItems = [
     { id: 'oversikt', name: 'Översikt', icon: Package },
     { id: 'skrivare', name: 'Skrivarleveranser', icon: Printer },
@@ -90,20 +90,34 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
   return (
     <div 
-      className="w-64 min-h-screen border-r border-white/20 backdrop-blur-sm" 
+      className={`${isCollapsed ? 'w-16' : 'w-64'} min-h-screen border-r border-white/20 backdrop-blur-sm transition-all duration-300 ease-in-out`}
       style={{background: 'linear-gradient(180deg, rgba(37,50,58,0.95) 0%, rgba(37,50,58,0.9) 100%)'}}
     >
-      <div className="p-6">
-        <div className="flex items-center mb-8">
-          <div 
-            className="p-2 rounded-xl mr-3" 
-            style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}
+      <div className="p-4">
+        {/* Header med toggle-knapp */}
+        <div className="flex items-center justify-between mb-6">
+          {!isCollapsed && (
+            <div className="flex items-center">
+              <div 
+                className="p-2 rounded-xl mr-3" 
+                style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}
+              >
+                <Package className="h-6 w-6 text-white" />
+              </div>
+              <h2 className="font-bold text-lg text-white">Leveranser</h2>
+            </div>
+          )}
+          
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
+            title={isCollapsed ? 'Expandera meny' : 'Minimera meny'}
           >
-            <Package className="h-6 w-6 text-white" />
-          </div>
-          <h2 className="font-bold text-lg text-white">Leveranser</h2>
+            {isCollapsed ? <Menu className="h-5 w-5" /> : <X className="h-5 w-5" />}
+          </button>
         </div>
         
+        {/* Navigationsmeny */}
         <nav className="space-y-2">
           {menuItems.map((item) => {
             const IconComponent = item.icon;
@@ -113,15 +127,18 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
               <button
                 key={item.id}
                 onClick={() => setActiveMenu(item.id)}
-                className={`w-full flex items-center px-4 py-3 rounded-xl text-left transition-all duration-200 ${
+                className={`w-full flex items-center ${isCollapsed ? 'justify-center px-3' : 'px-4'} py-3 rounded-xl text-left transition-all duration-200 ${
                   isActive 
                     ? 'text-white shadow-lg' 
                     : 'text-gray-300 hover:text-white hover:bg-white/10'
                 }`}
                 style={isActive ? {background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'} : {}}
+                title={isCollapsed ? item.name : undefined}
               >
-                <IconComponent className="h-5 w-5 mr-3" />
-                <span className="font-medium">{item.name}</span>
+                <IconComponent className={`h-5 w-5 ${isCollapsed ? '' : 'mr-3'} flex-shrink-0`} />
+                {!isCollapsed && (
+                  <span className="font-medium whitespace-nowrap">{item.name}</span>
+                )}
               </button>
             );
           })}
@@ -141,19 +158,21 @@ const OrderCard = ({ card, listName }) => {
 
   return (
     <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-gray-200/50 p-4 hover:shadow-lg transition-all duration-300 group hover:border-gray-300/50 hover:bg-white hover:shadow-xl">
-      <div className="flex items-center">
-        <h3 className="font-semibold w-64 mr-4" style={{color: '#25323A'}}>
+      <div className="flex items-start flex-wrap gap-2 md:gap-4">
+        <h3 className="font-semibold flex-1 min-w-0 mr-2 text-gray-900" style={{color: '#25323A', minWidth: '200px'}}>
           <a
             href={card.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline group-hover:opacity-80"
+            className="hover:underline group-hover:opacity-80 block text-gray-900"
+            style={{color: '#25323A', wordBreak: 'break-word'}}
+            title={card.name}
           >
             {card.name}
           </a>
         </h3>
         
-        <div className="flex flex-wrap gap-1 w-64">
+        <div className="flex flex-wrap gap-1" style={{minWidth: '200px'}}>
           {card.labels && card.labels.map((label) => (
             <span
               key={label.id}
@@ -178,7 +197,7 @@ const OrderCard = ({ card, listName }) => {
           ))}
         </div>
         
-        <div className="w-32 text-center mr-4">
+        <div className="text-center flex-shrink-0" style={{minWidth: '100px'}}>
           {getResponsibleSeller(card) && (
             <span className="text-xs font-medium px-2 py-1 rounded-md" style={{color: '#25323A', backgroundColor: 'rgba(37,50,58,0.1)'}}>
               {getResponsibleSeller(card)}
@@ -186,9 +205,9 @@ const OrderCard = ({ card, listName }) => {
           )}
         </div>
         
-        <div className="flex items-center px-3 py-1.5 rounded-full flex-shrink-0 ml-auto" style={{backgroundColor: 'rgba(37,50,58,0.1)'}}>
+        <div className="flex items-center px-3 py-1.5 rounded-full flex-shrink-0" style={{backgroundColor: 'rgba(37,50,58,0.1)', minWidth: '150px'}}>
           <Calendar className="h-4 w-4 mr-2" style={{color: '#25323A'}} />
-          <span className="font-medium text-sm" style={{color: '#25323A'}}>
+          <span className="font-medium text-sm whitespace-nowrap" style={{color: '#25323A'}}>
             {getDateLabel(listName)} {formatDate(getDisplayDate(card))}
           </span>
         </div>
@@ -284,25 +303,25 @@ const OverviewCard = ({ title, boardId, icon: Icon }) => {
   }, [boardId, title]);
 
   return (
-    <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 p-6 hover:shadow-2xl transition-all duration-300">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <div className="p-3 rounded-xl mr-4 shadow-lg" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
-            <Icon className="h-6 w-6 text-white" />
+    <div className="bg-white/90 backdrop-blur-lg rounded-xl lg:rounded-2xl shadow-xl border border-white/30 p-4 lg:p-6 hover:shadow-2xl transition-all duration-300">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 lg:mb-4">
+        <div className="flex items-center mb-2 sm:mb-0">
+          <div className="p-2 lg:p-3 rounded-lg lg:rounded-xl mr-3 lg:mr-4 shadow-lg" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
+            <Icon className="h-4 w-4 lg:h-6 lg:w-6 text-white" />
           </div>
-          <h3 className="font-bold text-lg" style={{color: '#25323A'}}>{title}</h3>
+          <h3 className="font-bold text-sm sm:text-base lg:text-lg" style={{color: '#25323A'}}>{title}</h3>
         </div>
       </div>
       
       <div className="text-center">
         {loading ? (
           <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-transparent" style={{borderTopColor: '#F24162'}}></div>
+            <div className="animate-spin rounded-full h-6 w-6 lg:h-8 lg:w-8 border-2 border-transparent" style={{borderTopColor: '#F24162'}}></div>
           </div>
         ) : (
           <div>
-            <span className="text-4xl font-bold" style={{color: '#F24162'}}>{totalCards}</span>
-            <p className="text-sm font-medium mt-1" style={{color: '#25323A'}}>aktiva leveranser</p>
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-bold" style={{color: '#F24162'}}>{totalCards}</span>
+            <p className="text-xs sm:text-sm font-medium mt-1" style={{color: '#25323A'}}>aktiva leveranser</p>
           </div>
         )}
       </div>
@@ -317,6 +336,22 @@ export default function TrelloOrderDashboard() {
   const [error, setError] = useState(null);
   const [loadingCards, setLoadingCards] = useState({});
   const [activeMenu, setActiveMenu] = useState('oversikt');
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Automatisk kollaps på små skärmar
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsCollapsed(true);
+      } else {
+        setIsCollapsed(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const getCurrentBoardId = () => {
     return BOARD_IDS[activeMenu] || BOARD_IDS.skrivare;
@@ -407,7 +442,12 @@ export default function TrelloOrderDashboard() {
   if (loading && activeMenu !== 'oversikt') {
     return (
       <div className="min-h-screen flex" style={{background: 'linear-gradient(135deg, #25323A 0%, #1a252b 50%, #25323A 100%)'}}>
-        <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+        <Sidebar 
+          activeMenu={activeMenu} 
+          setActiveMenu={setActiveMenu} 
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+        />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="relative">
@@ -424,9 +464,14 @@ export default function TrelloOrderDashboard() {
   if (error) {
     return (
       <div className="min-h-screen flex" style={{background: 'linear-gradient(135deg, #25323A 0%, #1a252b 50%, #25323A 100%)'}}>
-        <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+        <Sidebar 
+          activeMenu={activeMenu} 
+          setActiveMenu={setActiveMenu} 
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+        />
         <div className="flex-1 flex items-center justify-center">
-          <div className="backdrop-blur-sm border rounded-2xl p-8 max-w-md" style={{backgroundColor: 'rgba(242,65,98,0.2)', borderColor: 'rgba(242,65,98,0.5)'}}>
+          <div className="backdrop-blur-sm border rounded-2xl p-8 max-w-md mx-4" style={{backgroundColor: 'rgba(242,65,98,0.2)', borderColor: 'rgba(242,65,98,0.5)'}}>
             <div className="flex items-center mb-4">
               <AlertCircle className="h-8 w-8 mr-3" style={{color: '#F24162'}} />
               <h2 className="text-xl font-bold text-white">Fel uppstod</h2>
@@ -447,7 +492,12 @@ export default function TrelloOrderDashboard() {
 
   return (
     <div className="min-h-screen flex" style={{background: 'linear-gradient(135deg, #25323A 0%, #1a252b 50%, #25323A 100%)'}}>
-      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+      <Sidebar 
+        activeMenu={activeMenu} 
+        setActiveMenu={setActiveMenu} 
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
+      />
       
       {activeMenu === 'oversikt' ? (
         <div className="flex-1 relative overflow-hidden">
@@ -455,17 +505,17 @@ export default function TrelloOrderDashboard() {
             <div className="absolute inset-0" style={{background: 'linear-gradient(45deg, rgba(242,65,98,0.1) 0%, transparent 50%, rgba(242,65,98,0.1) 100%)'}}></div>
           </div>
           
-          <div className="relative z-10 p-8">
-            <div className="mb-8">
+          <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+            <div className="mb-6 lg:mb-8">
               <div className="flex items-center mb-4">
-                <div className="p-3 rounded-2xl shadow-lg mr-4" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
-                  <Package className="h-8 w-8 text-white" />
+                <div className="p-2 lg:p-3 rounded-2xl shadow-lg mr-3 lg:mr-4" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
+                  <Package className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-white">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
                     Översikt Dashboard
                   </h1>
-                  <p className="text-gray-300 text-lg mt-1">
+                  <p className="text-sm sm:text-base lg:text-lg text-gray-300 mt-1">
                     Realtidsöversikt över alla leveransområden
                   </p>
                 </div>
@@ -473,7 +523,7 @@ export default function TrelloOrderDashboard() {
             </div>
             
             <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
                 <OverviewCard 
                   title="Skrivarleveranser" 
                   boardId={BOARD_IDS.skrivare} 
@@ -509,17 +559,17 @@ export default function TrelloOrderDashboard() {
             <div className="absolute inset-0" style={{background: 'linear-gradient(45deg, rgba(242,65,98,0.1) 0%, transparent 50%, rgba(242,65,98,0.1) 100%)'}}></div>
           </div>
           
-          <div className="relative z-10 p-8">
-            <div className="mb-8">
+          <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+            <div className="mb-6 lg:mb-8">
               <div className="flex items-center mb-4">
-                <div className="p-3 rounded-2xl shadow-lg mr-4" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
-                  <Package className="h-8 w-8 text-white" />
+                <div className="p-2 lg:p-3 rounded-2xl shadow-lg mr-3 lg:mr-4" style={{background: 'linear-gradient(135deg, #F24162 0%, #e63558 100%)'}}>
+                  <Package className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-white">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
                     {getCurrentTitle()}
                   </h1>
-                  <p className="text-gray-300 text-lg mt-1">
+                  <p className="text-sm sm:text-base lg:text-lg text-gray-300 mt-1">
                     Realtidsöversikt över alla ordrar • <span className="font-semibold text-white">{totalOrders}</span> aktiva ordrar
                   </p>
                 </div>
